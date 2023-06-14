@@ -33,7 +33,7 @@ def get_scores(path):
 # input is the path to the folder containing {initial_scores, revised_scores, control_scores}.csv
 # outputs a three-item list containing the dataframes of initial_scores, revised_scores, control_scores.
     dfs = []
-    for file in ["initial_scores", "revised_scores", "control_scores"]:
+    for file in ["initial", "revised", "control"]:
         filepath = path + os.sep + file + ".csv"
 
         if not os.path.exists(filepath):
@@ -127,7 +127,7 @@ def main(args):
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_path', type=str, default='.')
+    parser.add_argument('--data_path', type=str, default='data')
     # parser.add_argument('--mwu_alt', type=str, default='less', help='The alternative argument in the scipy Mann Whitney U test. Options are less(default), greater, two-sided.')
     # alternative greater/less/two-sided only affects p value
     # parser.add_argument('--mwu_method', type=str, default='asymptotic', help='The method argument in the scipy Mann Whitney U test. Options are asymptotic(default), exact, auto')

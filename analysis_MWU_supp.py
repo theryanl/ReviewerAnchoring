@@ -24,7 +24,7 @@ def get_scores(path):
 # input is the path to the folder containing {initial_scores, revised_scores, control_scores}.csv
 # outputs a three-item list containing the dataframes of initial_scores, revised_scores, control_scores.
     dfs = []
-    for file in ["initial_scores", "revised_scores", "control_scores"]:
+    for file in ["initial", "revised", "control"]:
         filepath = path + os.sep + file + ".csv"
 
         if not os.path.exists(filepath):
@@ -82,6 +82,7 @@ def compare_seniority(initial_scores_df, revised_scores_df, control_scores_df):
     senior_control_scores = np.array([])
 
     for bucket in seniority_buckets:
+        print('bucket', bucket)
         initial_bucket_overall_scores = col_to_numpy(initial_scores_df[initial_scores_df["Year"] == bucket]["Overall"])
         revised_bucket_overall_scores = col_to_numpy(revised_scores_df[revised_scores_df["Year"] == bucket]["Overall"])
         control_bucket_overall_scores = col_to_numpy(control_scores_df[control_scores_df["Year"] == bucket]["Overall"])
@@ -176,19 +177,16 @@ def compare_confidence(initial_scores_df, revised_scores_df, control_scores_df):
 def separate_scores_by_institution(initial_scores_df, revised_scores_df, control_scores_df):
 # takes in three dfs: initial, revised, control
 # returns six dfs: CMU initial, revised, control, nonCMU initial, revised, control
-    noncmu_institutions_list = ["UC Berkeley", "University of Pittsburgh", "University of Southern California", "University of Chicago", 
-                                "UCB", "Stanford University", "Duke University, Computer Science Department", "University of Pennsylvania", 
-                                "PITT", "RMU"]
-    cmu_initial_scores_df = initial_scores_df[~initial_scores_df["Institution"].isin(noncmu_institutions_list)]
-    cmu_revised_scores_df = revised_scores_df[~revised_scores_df["Institution"].isin(noncmu_institutions_list)]
-    cmu_control_scores_df = control_scores_df[~control_scores_df["Institution"].isin(noncmu_institutions_list)]
+    cmu_initial_scores_df = initial_scores_df[initial_scores_df["Institution"] == "CMU"]
+    cmu_revised_scores_df = revised_scores_df[revised_scores_df["Institution"] == "CMU"]
+    cmu_control_scores_df = control_scores_df[control_scores_df["Institution"] == "CMU"]
 
     print(f'{cmu_initial_scores_df.shape[0]} of {initial_scores_df.shape[0]} experimental group participants were from CMU.')
     print(f'{cmu_control_scores_df.shape[0]} of {control_scores_df.shape[0]} control group participants were from CMU.')
 
-    noncmu_initial_scores_df = initial_scores_df[initial_scores_df["Institution"].isin(noncmu_institutions_list)]
-    noncmu_revised_scores_df = revised_scores_df[revised_scores_df["Institution"].isin(noncmu_institutions_list)]
-    noncmu_control_scores_df = control_scores_df[control_scores_df["Institution"].isin(noncmu_institutions_list)]
+    noncmu_initial_scores_df = initial_scores_df[initial_scores_df["Institution"] == "Non-CMU"]
+    noncmu_revised_scores_df = revised_scores_df[revised_scores_df["Institution"] == "Non-CMU"]
+    noncmu_control_scores_df = control_scores_df[control_scores_df["Institution"] == "Non-CMU"]
 
     return cmu_initial_scores_df, cmu_revised_scores_df, cmu_control_scores_df, noncmu_initial_scores_df, noncmu_revised_scores_df, noncmu_control_scores_df
 
@@ -251,7 +249,7 @@ def main(args):
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--data_path', type=str, default='.')
+    parser.add_argument('--data_path', type=str, default='data')
     args = parser.parse_args()
     return args
 
